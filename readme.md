@@ -12,6 +12,10 @@ run `php artisan key:generate`
 
 run `php artisan migrate`
 
+run `npm install`
+
 run `php artisan db:seed` to populate the database with dummy data
 
 run `php artisan serve`
+
+run `npm run dev` to compile assets
