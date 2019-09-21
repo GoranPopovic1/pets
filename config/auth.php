@@ -100,4 +100,13 @@ return [
         ],
     ],
 
+    // Socialite Drivers
+
+    'socialite' => [
+        'drivers' => [
+            'google',
+            'facebook'
+        ],
+    ],
+
 ];
