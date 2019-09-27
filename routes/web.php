@@ -17,7 +17,8 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/profile', 'ProfileController@index')
+    ->name('profile');
 
 Route::get('redirect/{driver}', 'Auth\LoginController@redirectToProvider')
     ->name('login.provider')
@@ -26,3 +27,6 @@ Route::get('redirect/{driver}', 'Auth\LoginController@redirectToProvider')
 Route::get('{driver}/callback', 'Auth\LoginController@handleProviderCallback')
     ->name('login.callback')
     ->where('driver', implode('|', config('auth.socialite.drivers')));
+
+Route::post('/profile/update', 'ProfileController@update')
+    ->name('update');
