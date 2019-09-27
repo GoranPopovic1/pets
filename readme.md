@@ -12,6 +12,8 @@ run `php artisan key:generate`
 
 run `php artisan migrate`
 
+run `php artisan storage:link`
+
 run `npm install`
 
 ~~run `php artisan db:seed` to populate the database with dummy data~~
