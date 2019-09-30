@@ -18,10 +18,13 @@ class CreateAdsTable extends Migration
             $table->string('title');
             $table->text('description');
             $table->string('category');
+            $table->string('sex');
             $table->unsignedBigInteger('image_id');
+            $table->unsignedBigInteger('user_id');
             $table->timestamps();
 
             $table->foreign('image_id')->references('id')->on('ads_images')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
