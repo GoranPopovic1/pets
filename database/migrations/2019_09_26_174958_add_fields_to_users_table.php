@@ -16,9 +16,7 @@ class AddFieldsToUsersTable extends Migration
         Schema::table('users', function (Blueprint $table) {
             $table->string('city')->nullable()->after('provider_id');
             $table->string('phone')->nullable()->after('city');
-            $table->unsignedBigInteger('image_id')->nullable()->after('phone');
-
-            $table->foreign('image_id')->references('id')->on('user_images')->onDelete('cascade');
+            $table->string('image')->nullable()->after('phone');
         });
     }
 
@@ -30,11 +28,9 @@ class AddFieldsToUsersTable extends Migration
     public function down()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropForeign('users_image_id_foreign');
-
             $table->dropColumn('city');
             $table->dropColumn('phone');
-            $table->dropColumn('image_id');
+            $table->dropColumn('image');
         });
     }
 }
