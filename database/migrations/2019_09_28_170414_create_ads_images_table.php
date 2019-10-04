@@ -16,7 +16,10 @@ class CreateAdsImagesTable extends Migration
         Schema::create('ads_images', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('image_path');
+            $table->unsignedBigInteger('ad_id');
             $table->timestamps();
+
+            $table->foreign('ad_id')->references('id')->on('ads_table')->onDelete('cascade');
         });
     }
 
