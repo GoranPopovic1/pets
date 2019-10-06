@@ -45,6 +45,7 @@
                                 @if( $image )
                                     <img src="{{ asset('storage/images/user/' . $image) }}" alt="user-image" class="img-thumbnail" />
                                     <a href="#">Delete Image</a>
+                                    {{--Kako obrisati samo profilnu sliku ako mi je update funkcija vec zauzeta? Pravim novu?--}}
                                 @else
                                     <img src="{{ asset('storage/images/user/default-avatar.jpg') }}" alt="user-image" class="img-thumbnail" />
                                 @endif
