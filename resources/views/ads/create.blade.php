@@ -100,7 +100,7 @@
 
                                 <div class="col-md-6">
                                     <input id="image" type="file"
-                                           class="form-control-file @error('image') is-invalid @enderror" name="image">
+                                           class="form-control-file @error('image') is-invalid @enderror" name="images[]" multiple>
 
                                     @error('image')
                                     <span class="invalid-feedback" role="alert">

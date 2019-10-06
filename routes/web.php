@@ -34,9 +34,7 @@
 //        'create' => 'ads.create',
 //    ]);
 
-Route::get('/', function () {
-    return view('home');
-});
+Route::get('/', 'AdController@index');
 
 Auth::routes();
 
