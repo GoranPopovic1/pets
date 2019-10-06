@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateAdsImagesTable extends Migration
+class CreateAdsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,16 @@ class CreateAdsImagesTable extends Migration
      */
     public function up()
     {
-        Schema::create('ads_images', function (Blueprint $table) {
+        Schema::create('ads', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('image_path');
+            $table->string('title');
+            $table->text('description');
+            $table->string('category');
+            $table->string('sex');
+            $table->unsignedBigInteger('user_id');
             $table->timestamps();
+
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
@@ -27,6 +33,6 @@ class CreateAdsImagesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('ads_images');
+        Schema::dropIfExists('ads');
     }
 }
