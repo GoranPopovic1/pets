@@ -40,12 +40,6 @@ Auth::routes();
 
 Route::resource('ads', 'AdController');
 
-Route::get('/profile', 'ProfileController@index')
-    ->name('profile');
-
-Route::post('/profile/update', 'ProfileController@update')
-    ->name('update');
-
 Route::get('redirect/{driver}', 'Auth\LoginController@redirectToProvider')
     ->name('login.provider')
     ->where('driver', implode('|', config('auth.socialite.drivers')));
@@ -53,3 +47,6 @@ Route::get('redirect/{driver}', 'Auth\LoginController@redirectToProvider')
 Route::get('{driver}/callback', 'Auth\LoginController@handleProviderCallback')
     ->name('login.callback')
     ->where('driver', implode('|', config('auth.socialite.drivers')));
+
+Route::resource('users', 'UserController')
+    ->except(['create', 'store']);
