@@ -11,11 +11,34 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+/*
+	C R U D
+	GET /ads (index)
+	GET /ads/create (create)
+	GET /ads/1 (show)
+	POST /ads (store)
+	POST /ads/edit (edit)
+	PATCH /ads/1 (update)
+	DELETE /ads/1 (destroy)
+*/
+
+//Route::resource('ads', 'AdController')
+//    ->only([
+//        'index', 'create',
+//    ])
+//    ->except([
+//        'index', 'create',
+//    ])
+//    ->names([
+//        'index' => 'ads.index',
+//        'create' => 'ads.create',
+//    ]);
+
+Route::get('/', 'AdController@index');
 
 Auth::routes();
+
+Route::resource('ads', 'AdController');
 
 Route::get('redirect/{driver}', 'Auth\LoginController@redirectToProvider')
     ->name('login.provider')
