@@ -63,6 +63,9 @@
                                     <a class="dropdown-item" href="{{ route('ads.create') }}">
                                         {{ __('Postavi oglas') }}
                                     </a>
+                                    <a class="dropdown-item" href="{{ route('messages.index') }}">
+                                        {{ __('Poruke') }} @include('messages.unread-count')
+                                    </a>
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                        onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
