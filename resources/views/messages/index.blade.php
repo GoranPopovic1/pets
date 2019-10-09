@@ -1,7 +1,9 @@
 @extends('layouts.app')
 
 @section('content')
-    @include('messages.partials.flash')
+    <div class="container">
+        @include('messages.partials.flash')
 
-    @each('messages.partials.thread', $threads, 'thread', 'messages.partials.no-threads')
-@stop
+        @each('messages.partials.thread', $threads, 'thread', 'messages.partials.no-threads')
+    </div>
+@endsection

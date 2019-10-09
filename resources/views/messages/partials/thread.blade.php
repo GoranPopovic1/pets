@@ -1,16 +1,25 @@
 <?php $class = $thread->isUnread(Auth::id()) ? 'alert-info' : ''; ?>
 
-<div class="media alert {{ $class }}">
-    <h4 class="media-heading">
-        <a href="{{ route('messages.show', $thread->id) }}">{{ $thread->subject }}</a>
-        ({{ $thread->userUnreadMessagesCount(Auth::id()) }} unread)</h4>
+<div class="alert {{ $class }}">
+    <h4>
+        <small><strong>{{ __('Naslov:') }}</strong> <a href="{{ route('messages.show', $thread->id) }}">{{ $thread->subject }}</a>
+        ({{ $thread->userUnreadMessagesCount(Auth::id()) }} unread) </small>
+    </h4>
     <p>
-        {{ $thread->latestMessage->body }}
+        <strong>{{ __('Poruka:') }}</strong> {{ $thread->latestMessage->body }}
     </p>
     <p>
-        <small><strong>Creator:</strong> {{ $thread->creator()->name }}</small>
+        <strong>{{ __('Sagovornik:') }}</strong> {{ $thread->participantsString(Auth::id()) }}
     </p>
-    <p>
-        <small><strong>Participants:</strong> {{ $thread->participantsString(Auth::id()) }}</small>
-    </p>
+
+    <a href="#"
+       onclick="event.preventDefault();
+       document.getElementById('logout-form').submit();">
+       {{ __('Obriši') }}
+    </a>
+
+    <form id="delete-message" action="{{ route('messages.destroy', $thread->id) }}" method="POST" style="display: none;">
+        @method('DELETE')
+        @csrf
+    </form>
 </div>

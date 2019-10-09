@@ -38,11 +38,13 @@ class MessageController extends Controller
      *
      * @return mixed
      */
-    public function create()
+    public function create(Request $request)
     {
         $users = User::where('id', '!=', Auth::id())->get();
 
-        return view('messages.create', compact('users'));
+        $queryParams = $request->query->all();
+
+        return view('messages.create', compact('users', 'queryParams'));
     }
 
     /**
@@ -73,8 +75,8 @@ class MessageController extends Controller
         ]);
 
         // Recipients
-        if ($request->has('recipients')) {
-            $thread->addParticipant($input['recipients']);
+        if ($request->has('recipient')) {
+            $thread->addParticipant($input['recipient']);
         }
 
         return redirect()->route('messages.index');
@@ -168,6 +170,14 @@ class MessageController extends Controller
      */
     public function destroy($id)
     {
-        //
+        try {
+            $thread = Thread::findOrFail($id);
+        } catch (ModelNotFoundException $e) {
+            Session::flash('error_message', 'The thread with ID: ' . $id . ' was not found.');
+
+            return redirect()->route('messages');
+        }
+
+        $thread->activateAllParticipants();
     }
 }
