@@ -14,7 +14,7 @@
 
     <a href="#"
        onclick="event.preventDefault();
-       document.getElementById('logout-form').submit();">
+       document.getElementById('delete-message').submit();">
        {{ __('Obriši') }}
     </a>
 

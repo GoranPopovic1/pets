@@ -1,1 +1,1 @@
-<p>Sorry, no threads.</p>
+<p>{{ __('Nema poruka') }}</p>

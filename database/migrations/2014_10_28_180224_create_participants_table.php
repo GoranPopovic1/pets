@@ -16,10 +16,14 @@ class CreateParticipantsTable extends Migration
     {
         Schema::create(Models::table('participants'), function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('thread_id')->unsigned();
-            $table->integer('user_id')->unsigned();
+            $table->unsignedBigInteger('thread_id');
+            $table->unsignedBigInteger('user_id');
             $table->timestamp('last_read')->nullable();
             $table->timestamps();
+            $table->softDeletes();
+
+            $table->foreign('thread_id')->references('id')->on('threads')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

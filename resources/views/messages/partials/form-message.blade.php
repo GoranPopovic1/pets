@@ -1,4 +1,4 @@
-<h2>Napiši novu poruku</h2>
+<h2>{{ __('Napiši novu poruku') }}</h2>
 <form action="{{ route('messages.update', $thread->id) }}" method="post">
     @method('PUT')
     @csrf
@@ -10,6 +10,6 @@
 
     <!-- Submit Form Input -->
     <div class="form-group">
-        <button type="submit" class="btn btn-primary form-control">Pošalji</button>
+        <button type="submit" class="btn btn-primary form-control">{{ __('Pošalji') }}</button>
     </div>
 </form>
