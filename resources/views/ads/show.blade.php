@@ -23,6 +23,10 @@
                                 <p class="card-text">Ime: {{ $user->name }}</p>
                                 <p class="card-text">Telefon: {{ $user->phone }}</p>
                                 <p class="card-text">Mesto/Grad: {{ $user->city }}</p>
+
+                                @if(auth()->user()->id !== $user->id)
+                                    <a href="{{ route('messages.create', ['user_id' => $user->id]) }}">Pošalji poruku</a>
+                                @endif
                             </div>
                         </div>
 
