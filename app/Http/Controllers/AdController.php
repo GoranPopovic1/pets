@@ -105,9 +105,21 @@ class AdController extends Controller
      */
     public function show(Ad $ad)
     {
-        $user = User::findOrFail($ad->user_id);
+        $authUser = auth()->user();
 
-        return view('ads.show', compact('ad', 'user'));
+        $adUser = User::findOrFail($ad->user_id);
+
+        $thread = '';
+
+        foreach ($authUser->threads as $authUserThread) {
+            foreach ($adUser->threads as $adUserThread) {
+                if($authUserThread->id == $adUserThread->id) {
+                    $thread = $adUserThread;
+                }
+            }
+        }
+
+        return view('ads.show', compact('ad', 'adUser', 'thread'));
     }
 
     /**
