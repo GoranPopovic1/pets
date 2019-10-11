@@ -5,7 +5,7 @@
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card">
-                    <div class="card-header">Postavi oglas</div>
+                    <div class="card-header">{{ __('Postavi oglas') }}</div>
 
                     <div class="card-body">
                         @if (session('status'))
@@ -54,15 +54,15 @@
                                     <select id="category"
                                             class="form-control @error('category') is-invalid @enderror"
                                             name="category" required autocomplete="category" autofocus>
-                                        <option value="">Izaberi</option>
-                                        <option value="psi">Psi</option>
-                                        <option value="mačke">Mačke</option>
-                                        <option value="ptice">Ptice</option>
-                                        <option value="konji">Konji</option>
-                                        <option value="ribice">Ribice</option>
-                                        <option value="glodari">Glodari</option>
-                                        <option value="reptili">Reptili i amfibije</option>
-                                        <option value="ostalo">Ostalo</option>
+                                        <option value="">{{ __('Izaberi') }}</option>
+                                        <option value="psi">{{ __('Psi') }}</option>
+                                        <option value="mačke">{{ __('Mačke') }}</option>
+                                        <option value="ptice">{{ __('Ptice') }}</option>
+                                        <option value="konji">{{ __('Konji') }}</option>
+                                        <option value="ribice">{{ __('Ribice') }}</option>
+                                        <option value="glodari">{{ __('Glodari') }}</option>
+                                        <option value="reptili">{{ __('Reptili i amfibije') }}</option>
+                                        <option value="ostalo">{{ __('Ostalo') }}</option>
                                     </select>
 
                                     @error('category')
@@ -80,10 +80,10 @@
                                     <select id="sex"
                                             class="form-control @error('sex') is-invalid @enderror"
                                             name="sex" required autocomplete="category" autofocus>
-                                        <option value="">Izaberi</option>
-                                        <option value="muški">Muški</option>
-                                        <option value="ženski">Ženski</option>
-                                        <option value="oba">Oba Pola</option>
+                                        <option value="">{{ __('Izaberi') }}</option>
+                                        <option value="muški">{{ __('Muški') }}</option>
+                                        <option value="ženski">{{ __('Ženski') }}</option>
+                                        <option value="oba">{{ __('Oba Pola') }}</option>
                                     </select>
 
                                     @error('sex')
