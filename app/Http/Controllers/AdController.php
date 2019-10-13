@@ -6,8 +6,8 @@ use App\Ad;
 use App\AdImage;
 use App\User;
 use Illuminate\Http\Request;
-use App\Http\Requests\StoreAds;
-use App\Http\Requests\SaveAd;
+use App\Http\Requests\StoreAd;
+use App\Http\Requests\UpdateAd;
 use Illuminate\Support\Facades\Storage;
 
 class AdController extends Controller
@@ -49,7 +49,7 @@ class AdController extends Controller
      * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreAds $request)
+    public function store(StoreAd $request)
     {
         $userId = auth()->user()->id;
 
@@ -144,7 +144,7 @@ class AdController extends Controller
      * @param  \App\Ad $ad
      * @return \Illuminate\Http\Response
      */
-    public function update(SaveAd $request, Ad $ad)
+    public function update(UpdateAd $request, Ad $ad)
     {
         $adPost = Ad::findOrFail($ad->id);
 
@@ -233,16 +233,16 @@ class AdController extends Controller
         }
     }
 
-    public function my_ads()
+    public function myAds()
     {
         $userId = auth()->user()->id;
 
         $myAds = Ad::where('user_id', $userId)->get();
 
-        return view('ads.my_ads', compact('myAds'));
+        return view('ads.my-ads', compact('myAds'));
     }
 
-    public function delete_ad_image($id)
+    public function deleteAdImage($id)
     {
         $adImage = AdImage::findOrFail($id);
 

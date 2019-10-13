@@ -123,7 +123,7 @@
                             @foreach($adPost->images as $image)
                                 <div class="col-md-4">
                                     <img src="{{ asset($image->image_path) }}" alt="ad-image" style="height: 100px;" />
-                                    <a href="{{ url('delete-ad-image-' . $image->id ) }}">Delete</a>
+                                    <a href="{{ url('delete/ad/image/' . $image->id ) }}">Delete</a>
                                 </div>
                             @endforeach
                         @else

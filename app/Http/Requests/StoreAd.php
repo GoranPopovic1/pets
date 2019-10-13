@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class SaveAd extends FormRequest
+class StoreAd extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -26,9 +26,9 @@ class SaveAd extends FormRequest
         return [
             'title'       => ['required','string'],
             'description' => ['required','string'],
-            'category'    => ['nullable','string'],
-            'sex'         => ['nullable','string'],
-            'images'      => 'nullable',
+            'category'    => ['required','string'],
+            'sex'         => ['required','string'],
+            'images'      => 'required',
             'images.*'    => 'mimes:jpeg,png,jpg|max:2048'
         ];
     }

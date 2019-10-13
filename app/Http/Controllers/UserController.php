@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
-use App\Http\Requests\SaveUser;
+use App\Http\Requests\UpdateUser;
 use Illuminate\Http\Request;
 use App\User;
 use Illuminate\Support\Facades\Hash;
@@ -91,7 +91,7 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(SaveUser $request, $id)
+    public function update(UpdateUser $request, $id)
     {
         $user = User::findOrFail($id);
 
