@@ -40,6 +40,10 @@ Auth::routes();
 
 Route::resource('ads', 'AdController');
 
+Route::get('my-ads', 'AdController@my_ads');
+
+Route::get('delete-ad-image-{id}', 'AdController@delete_ad_image');
+
 Route::resource('users', 'UserController')
     ->except(['create', 'store']);
 

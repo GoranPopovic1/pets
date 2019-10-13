@@ -7,6 +7,8 @@ use App\AdImage;
 use App\User;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreAds;
+use App\Http\Requests\SaveAd;
+use Illuminate\Support\Facades\Storage;
 
 class AdController extends Controller
 {
@@ -130,7 +132,9 @@ class AdController extends Controller
      */
     public function edit(Ad $ad)
     {
-        //
+        $adPost = Ad::findOrFail($ad->id);
+
+        return view('ads.edit', compact('adPost'));
     }
 
     /**
@@ -140,9 +144,62 @@ class AdController extends Controller
      * @param  \App\Ad $ad
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Ad $ad)
+    public function update(SaveAd $request, Ad $ad)
     {
-        //
+        $adPost = Ad::findOrFail($ad->id);
+
+        $title       = $request->get('title');
+        $description = $request->get('description');
+        $category    = $request->get('category');
+        $sex         = $request->get('sex');
+
+        try {
+
+            $adPost->title = $title;
+            $adPost->description = $description;
+
+            if ( $category !== null ) {
+                $adPost->category = $category;
+            }
+
+            if( $sex !== null ) {
+                $adPost->sex = $sex;
+            }
+
+            $adPost->user_id = $ad->id;
+
+            $adPost->save();
+
+            if($request->hasfile('images')) {
+                $files = $request->file('images');
+                foreach ($files as $file) {
+                    // Handle File Upload
+
+                    // Get filename with the extension
+                    $filenameWithExt = $file->getClientOriginalName();
+                    // Get just filename
+                    $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
+                    // Get just ext
+                    $extension = $file->getClientOriginalExtension();
+                    // Filename to store
+                    $fileNameToStore = $filename.'_'.time().'.'.$extension;
+                    // Upload Image
+                    $file->storeAs('public/images/post', $fileNameToStore); // post = ads, added because of ad blocker
+
+                    AdImage::create([
+                        'image_path' => '/storage/images/post/' . $fileNameToStore,
+                        'ad_id'      => $ad->id,
+                    ]);
+                }
+            }
+
+            return redirect('/my-ads');
+
+        } catch (Exception $e) {
+            report($e);
+
+            return false;
+        }
     }
 
     /**
@@ -153,6 +210,56 @@ class AdController extends Controller
      */
     public function destroy(Ad $ad)
     {
-        //
+        $adPost = Ad::findOrFail($ad->id);
+
+        $adImages = AdImage::where('ad_id', $ad->id)->get();
+
+        try {
+
+            foreach ($adImages as $adImage) {
+                $path = str_replace('/storage', '', $adImage->image_path);
+
+                Storage::delete('/public'.$path);
+            }
+
+            $adPost->delete();
+
+            return redirect('/my-ads');
+
+        } catch (Exception $e) {
+            report($e);
+
+            return false;
+        }
+    }
+
+    public function my_ads()
+    {
+        $userId = auth()->user()->id;
+
+        $myAds = Ad::where('user_id', $userId)->get();
+
+        return view('ads.my_ads', compact('myAds'));
+    }
+
+    public function delete_ad_image($id)
+    {
+        $adImage = AdImage::findOrFail($id);
+
+        try {
+
+            $path = str_replace('/storage', '', $adImage->image_path);
+
+            Storage::delete('/public' . $path);
+
+            $adImage->delete();
+
+            return redirect()->back();
+
+        } catch (Exception $e) {
+            report($e);
+
+            return false;
+        }
     }
 }
