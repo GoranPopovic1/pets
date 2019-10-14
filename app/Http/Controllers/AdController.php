@@ -233,13 +233,13 @@ class AdController extends Controller
         }
     }
 
-    public function myAds()
+    public function userAds()
     {
         $userId = auth()->user()->id;
 
-        $myAds = Ad::where('user_id', $userId)->get();
+        $userAds = Ad::where('user_id', $userId)->get();
 
-        return view('ads.my-ads', compact('myAds'));
+        return view('ads.user-ads', compact('userAds'));
     }
 
     public function deleteAdImage($id)

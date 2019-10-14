@@ -40,7 +40,7 @@ Auth::routes();
 
 Route::resource('ads', 'AdController');
 
-Route::get('my-ads', 'AdController@myAds');
+Route::get('user-ads', 'AdController@userAds');
 
 Route::get('delete/ad/image/{id}', 'AdController@deleteAdImage');
 
