@@ -1,0 +1,98 @@
+version: 2
+jobs:
+  build:
+    docker:
+      # Specify the version you desire here
+      - image: circleci/php:7.2-node-browsers
+      - image: circleci/mariadb:10.1
+        environment:
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+          MYSQL_USER: root
+          MYSQL_ROOT_PASSWORD: ''
+          MYSQL_DATABASE: pets
+
+    steps:
+
+      - checkout
+
+      - run:
+          name: Install PHP exts
+          command: |
+            sudo docker-php-ext-install zip
+            sudo docker-php-ext-install pdo_mysql
+            # default-mysql works too instead of mariadb
+            sudo apt install -y mariadb-client
+
+      - run: sudo composer self-update
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "composer.json" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-dependencies-
+
+      - run: composer install -n --prefer-dist
+
+      - save_cache:
+          paths:
+            - ./vendor
+          key: v1-dependencies-{{ checksum "composer.json" }}
+
+      - run:
+          name: Setup Laravel stuffs
+          command: |
+            php artisan migrate --env=testing --force
+
+      # node cache
+      - restore_cache:
+          keys:
+            - node-v4-{{ checksum "package.json" }}
+            - node-v4-
+      - run: npm install
+      - save_cache:
+          key: node-v4-{{ checksum "package.json" }}
+          paths:
+            - node_modules
+            - ~/.yarn
+
+#  deploy:
+#    machine:
+#      enabled: true
+#
+#    steps:
+#
+#      - checkout
+#
+#      #      - run:
+#      #          name: Fix ssh Could not resolve hostname
+#      #          command: |
+#      #            ssh-keyscan $SSH_HOST >> ~/.ssh/known_hosts # Add live server IP to known hosts.
+#
+#      - run:
+#          name: Deploy Development over SSH.
+#          command: if [ "${CIRCLE_BRANCH}" == "develop" ]; then ssh $SSH_USER@$SSH_HOST "cd /var/www/development && sh deploy.sh"; else echo "This Branch is Skipped"; fi
+#
+#      - run:
+#          name: Deploy Master over SSH.
+#          command: if [ "${CIRCLE_BRANCH}" == "master" ]; then ssh $SSH_USER@$SSH_HOST 'cd /var/www/production && sh deploy.sh'; else echo "This Branch is Skipped"; fi
+
+#workflows:
+#  version: 2
+#  build-and-deploy:
+#    jobs:
+#      - build
+#      #- build:
+#          #filters:
+#            #branches:
+#              #only:
+#                #- development
+#                #- master
+#      - deploy:
+#          requires:
+#            - build
+#          filters:
+#            branches:
+#              only:
+#                - develop
+#                - master
