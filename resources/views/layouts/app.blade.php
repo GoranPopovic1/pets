@@ -52,30 +52,22 @@
                                 <a class="nav-link" href="{{ route('ads.create') }}">{{ __('Postavi oglas') }}</a>
                             </li>
                             <li class="nav-item dropdown">
-                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                    {{ auth()->user()->name }} <span class="caret"></span>
-                                </a>
 
-                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="{{ url('users/' . auth()->user()->id ) }}">
-                                        {{ __('Profil') }}
-                                    </a>
-                                    <a class="dropdown-item" href="{{ route('ads.create') }}">
-                                        {{ __('Postavi oglas') }}
-                                    </a>
-                                    <a class="dropdown-item" href="{{ route('messages.index') }}">
-                                        {{ __('Poruke') }} @include('messages.unread-count')
-                                    </a>
-                                    <a class="dropdown-item" href="{{ route('logout') }}"
-                                       onclick="event.preventDefault();
-                                                     document.getElementById('logout-form').submit();">
-                                        {{ __('Logout') }}
-                                    </a>
-
-                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                                        @csrf
-                                    </form>
+                                <div>
+                                    <b-dropdown id="navbarDropdown" text="Bogdan" class="m-md-2">
+                                        <b-dropdown-item class="dropdown-item" href="{{ url('users/' . auth()->user()->id ) }}">{{ __('Profil') }}</b-dropdown-item>
+                                        <b-dropdown-item class="dropdown-item" href="{{ url('user-ads' ) }}">{{ __('Moji oglasi') }}</b-dropdown-item>
+                                        <b-dropdown-item class="dropdown-item" href="{{ route('ads.create') }}">{{ __('Postavi oglas') }}</b-dropdown-item>
+                                        <b-dropdown-item class="dropdown-item" href="{{ route('messages.index') }}">{{ __('Poruke') }} @include('messages.unread-count')</b-dropdown-item>
+                                        <b-dropdown-item class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                            {{ __('Logout') }}
+                                            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                                @csrf
+                                            </form>
+                                        </b-dropdown-item>
+                                    </b-dropdown>
                                 </div>
+
                             </li>
                         @endguest
                     </ul>

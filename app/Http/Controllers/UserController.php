@@ -3,10 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
-use App\Http\Requests\SaveUser;
+use App\Http\Requests\UpdateUser;
 use Illuminate\Http\Request;
 use App\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
@@ -78,7 +79,9 @@ class UserController extends Controller
      */
     public function edit($id)
     {
-        //
+        $user = User::findOrFail($id);
+
+        return view('users.edit', compact('user'));
     }
 
     /**
@@ -88,7 +91,7 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(SaveUser $request, $id)
+    public function update(UpdateUser $request, $id)
     {
         $user = User::findOrFail($id);
 
@@ -105,20 +108,34 @@ class UserController extends Controller
         }
 
         try {
-            if ( $request->hasfile('image') ) {
-                $file = $request->file('image');
-                $extension = $file->getClientOriginalExtension();
-                $filename = time() . '.' . $extension;
-                $file->move('storage/images/user/', $filename);
-
-                $user->image = $filename;
-            }
 
             $user->name     = $name;
             $user->email    = $email;
             $user->city     = $city;
             $user->phone    = $phone;
             $user->password = $password;
+
+            if($request->hasfile('image')) {
+                // Delete previous image
+                $path = str_replace('/storage', '', $user->image);
+                Storage::delete('/public' . $path);
+
+                // Handle File Upload
+                $file = $request->file('image');
+
+                // Get filename with the extension
+                $filenameWithExt = $file->getClientOriginalName();
+                // Get just filename
+                $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
+                // Get just ext
+                $extension = $file->getClientOriginalExtension();
+                // Filename to store
+                $fileNameToStore = $filename.'_'.time().'.'.$extension;
+                // Upload Image
+                $file->storeAs('public/images/user', $fileNameToStore);
+                // Store Image
+                $user->image = '/storage/images/user/' . $fileNameToStore;
+            }
 
             $user->save();
 
