@@ -56,43 +56,43 @@ jobs:
             - node_modules
             - ~/.yarn
 
-#  deploy:
-#    machine:
-#      enabled: true
-#
-#    steps:
-#
-#      - checkout
-#
-#      #      - run:
-#      #          name: Fix ssh Could not resolve hostname
-#      #          command: |
-#      #            ssh-keyscan $SSH_HOST >> ~/.ssh/known_hosts # Add live server IP to known hosts.
-#
-#      - run:
-#          name: Deploy Development over SSH.
-#          command: if [ "${CIRCLE_BRANCH}" == "develop" ]; then ssh $SSH_USER@$SSH_HOST "cd /var/www/development && sh deploy.sh"; else echo "This Branch is Skipped"; fi
-#
-#      - run:
-#          name: Deploy Master over SSH.
-#          command: if [ "${CIRCLE_BRANCH}" == "master" ]; then ssh $SSH_USER@$SSH_HOST 'cd /var/www/production && sh deploy.sh'; else echo "This Branch is Skipped"; fi
+  deploy:
+    machine:
+      enabled: true
 
-#workflows:
-#  version: 2
-#  build-and-deploy:
-#    jobs:
-#      - build
-#      #- build:
-#          #filters:
-#            #branches:
-#              #only:
-#                #- development
-#                #- master
-#      - deploy:
-#          requires:
-#            - build
-#          filters:
-#            branches:
-#              only:
-#                - develop
-#                - master
+    steps:
+
+      - checkout
+
+      - run:
+          name: Fix ssh Could not resolve hostname
+          command: |
+            ssh-keyscan $SSH_HOST >> ~/.ssh/known_hosts # Add live server IP to known hosts.
+
+      - run:
+          name: Deploy Development over SSH.
+          command: if [ "${CIRCLE_BRANCH}" == "develop" ]; then ssh $SSH_USER@$SSH_HOST "cd applications/zkfzvpcetb/public_html && sh deploy.sh"; else echo "This Branch is Skipped"; fi
+
+      - run:
+          name: Deploy Master over SSH.
+          command: if [ "${CIRCLE_BRANCH}" == "master" ]; then ssh $SSH_USER@$SSH_HOST 'cd applications/rcbavnxyba/public_html && sh deploy.sh'; else echo "This Branch is Skipped"; fi
+
+workflows:
+  version: 2
+  build-and-deploy:
+    jobs:
+      - build
+      #- build:
+          #filters:
+            #branches:
+              #only:
+                #- development
+                #- master
+      - deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                - develop
+                - master
