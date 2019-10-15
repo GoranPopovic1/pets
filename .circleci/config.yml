@@ -54,7 +54,6 @@ jobs:
           key: node-v4-{{ checksum "package.json" }}
           paths:
             - node_modules
-            - ~/.yarn
 
   deploy:
     machine:
