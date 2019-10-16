@@ -9,7 +9,7 @@ jobs:
           MYSQL_ALLOW_EMPTY_PASSWORD: yes
           MYSQL_USER: root
           MYSQL_ROOT_PASSWORD: ''
-          MYSQL_DATABASE: pets
+          MYSQL_DATABASE: test_pets
 
     steps:
 
