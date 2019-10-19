@@ -56,3 +56,5 @@ Route::get('redirect/{driver}', 'Auth\LoginController@redirectToProvider')
 Route::get('{driver}/callback', 'Auth\LoginController@handleProviderCallback')
     ->name('login.callback')
     ->where('driver', implode('|', config('auth.socialite.drivers')));
+
+//test
