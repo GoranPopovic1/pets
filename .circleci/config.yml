@@ -11,6 +11,8 @@ jobs:
           MYSQL_ROOT_PASSWORD: ''
           MYSQL_DATABASE: test_pets
 
+    working_directory: ~/pets
+
     steps:
 
       - checkout
@@ -59,6 +61,8 @@ jobs:
     machine:
       enabled: true
 
+    working_directory: ~/pets
+
     steps:
 
       - checkout
@@ -67,10 +71,6 @@ jobs:
           name: Fix ssh Could not resolve hostname
           command: |
             ssh-keyscan $SSH_HOST >> ~/.ssh/known_hosts # Add live server IP to known hosts.
-
-#      - add_ssh_keys: # add private SSH key from CircleCI account based on fingerprint.
-#          fingerprints:
-#            - "e8:71:ae:86:78:5a:12:ff:14:3e:a8:7d:11:9a:b9:c1"
 
       - run:
           name: Deploy Development over SSH.
