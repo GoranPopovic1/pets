@@ -34,20 +34,28 @@
 //        'create' => 'ads.create',
 //    ]);
 
+Auth::routes(['verify' => true]);
+
+// AUTHENTICATED USER SECTION
+Route::group(['middleware' => 'auth'], function() {
+    // VERIFIED ROUTE SECTION
+    Route::group(['middleware' => 'verified'], function() {
+        Route::resource('users', 'UserController')
+            ->except(['create', 'store']);
+
+        Route::resource('ads', 'AdController')
+            ->except(['index', 'show']);
+
+        Route::get('user-ads', 'AdController@userAds');
+
+        Route::get('delete/ad/image/{id}', 'AdController@deleteAdImage');
+
+        Route::resource('messages', 'MessageController');
+    });
+});
+
 Route::get('/', 'AdController@index');
-
-Auth::routes();
-
-Route::resource('ads', 'AdController');
-
-Route::get('user-ads', 'AdController@userAds');
-
-Route::get('delete/ad/image/{id}', 'AdController@deleteAdImage');
-
-Route::resource('users', 'UserController')
-    ->except(['create', 'store']);
-
-Route::resource('messages', 'MessageController');
+Route::get('/ads/{ad}', 'AdController@show');
 
 Route::get('redirect/{driver}', 'Auth\LoginController@redirectToProvider')
     ->name('login.provider')

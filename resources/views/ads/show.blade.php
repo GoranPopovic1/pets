@@ -24,11 +24,17 @@
                                 <p class="card-text">{{ __('Telefon:') }} {{ $adUser->phone }}</p>
                                 <p class="card-text">{{ __('Mesto/Grad:') }} {{ $adUser->city }}</p>
 
-                                @if(auth()->user()->id !== $adUser->id)
-                                    @if($thread == '')
-                                        <a href="{{ route('messages.create', ['user_id' => $adUser->id]) }}">{{ __('Pošalji poruku') }}</a>
-                                    @else
-                                        <a href="{{ route('messages.show', ['message' => $thread->id]) }}">{{ __('Pošalji poruku') }}</a>
+                                @if (Auth::guest())
+                                    <a href="#" v-on:click.self.prevent v-b-tooltip.hover title="{{ __('Morate biti registrovani da biste poslali poruku.') }}">
+                                        {{ __('Pošalji poruku') }}
+                                    </a>
+                                @else
+                                    @if(auth()->user()->id !== $adUser->id)
+                                        @if($thread == '')
+                                            <a href="{{ route('messages.create', ['user_id' => $adUser->id]) }}">{{ __('Pošalji poruku') }}</a>
+                                        @else
+                                            <a href="{{ route('messages.show', ['message' => $thread->id]) }}">{{ __('Pošalji poruku') }}</a>
+                                        @endif
                                     @endif
                                 @endif
                             </div>
