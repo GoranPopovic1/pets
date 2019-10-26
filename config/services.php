@@ -41,4 +41,9 @@ return [
         'client_secret' => env('FACEBOOK_CLIENT_SECRET'),
         'redirect'      => env('FACEBOOK_REDIRECT'),
     ],
+
+    'elastic_email' => [
+        'key' => env('ELASTIC_KEY'),
+        'account' => env('ELASTIC_ACCOUNT')
+    ]
 ];
