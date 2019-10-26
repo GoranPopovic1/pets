@@ -19,7 +19,7 @@ class AdController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+
     }
     /**
      * Display a listing of the resource.
@@ -113,10 +113,12 @@ class AdController extends Controller
 
         $thread = '';
 
-        foreach ($authUser->threads as $authUserThread) {
-            foreach ($adUser->threads as $adUserThread) {
-                if($authUserThread->id == $adUserThread->id) {
-                    $thread = $adUserThread;
+        if(!empty($authUser->threads) && !empty($adUser->threads)){
+            foreach ($authUser->threads as $authUserThread) {
+                foreach ($adUser->threads as $adUserThread) {
+                    if ($authUserThread->id == $adUserThread->id) {
+                        $thread = $adUserThread;
+                    }
                 }
             }
         }
