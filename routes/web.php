@@ -21,7 +21,7 @@
 	PATCH /ads/1 (update)
 	DELETE /ads/1 (destroy)
 */
-
+//test
 //Route::resource('ads', 'AdController')
 //    ->only([
 //        'index', 'create',
