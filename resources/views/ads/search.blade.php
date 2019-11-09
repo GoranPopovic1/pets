@@ -22,7 +22,7 @@
                                         $categories = ['Psi', 'Mačke', 'Ptice', 'Konji', 'Ribice', 'Glodari', 'Reptili i amfibije', 'Ostalo'];
 
                                         foreach( $categories as $cat) {
-                                            echo '<b-form-checkbox id="category-1" v-model="status" name="category[]" value="' . strtolower($cat) . '" unchecked-value="not_accepted"> ' . __($cat) . ' </b-form-checkbox>';
+                                            echo '<b-form-checkbox id="category-1" v-model="status" name="category[]" value="' . strtolower(str_replace(' ', '', $cat)) . '" unchecked-value="not_accepted"> ' . __($cat) . ' </b-form-checkbox>';
                                         }
                                     ?>
                                 </div>
