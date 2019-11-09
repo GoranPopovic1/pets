@@ -5,13 +5,11 @@
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card">
-                    <div class="card-header">Oglas</div>
+                    <div class="card-header">{{ $ad->title }}</div>
 
                     <div class="card-body">
-
                         <div class="row">
                             <div class="col-md-6">
-                                <p class="card-text">{{ __('Naslov:') }} {{ $ad->title }}</p>
                                 @foreach($ad->images as $image)
                                     <img src="{{ asset($image->image_path) }}" alt="ad-image" style="height: 100px;" />
                                 @endforeach
@@ -20,7 +18,13 @@
                                 <p class="card-text">{{ __('Datum:') }} {{ $ad->created_at }}</p>
                             </div>
                             <div class="col-md-6">
-                                <p class="card-text">{{ __('Ime:') }} {{ $adUser->name }}</p>
+                                <p class="card-text">{{ __('Ime:') }}
+                                    @if( $adUser->id !== auth()->user()->id )
+                                        <a href="{{ url('users/' . $adUser->id . '/ads') }}"> {{ $adUser->name }}</a>
+                                    @else
+                                        {{ $adUser->name }}
+                                    @endif
+                                </p>
                                 <p class="card-text">{{ __('Telefon:') }} {{ $adUser->phone }}</p>
                                 <p class="card-text">{{ __('Mesto/Grad:') }} {{ $adUser->city }}</p>
 
@@ -33,9 +37,7 @@
                                 @endif
                             </div>
                         </div>
-
                     </div>
-
                 </div>
             </div>
         </div>

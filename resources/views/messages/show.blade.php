@@ -6,7 +6,7 @@
             <h1 class="mb-4">{{ $thread->subject }}</h1>
             @each('messages.partials.messages', $thread->messages, 'message')
 
-            @include('messages.partials.form-message')
+            @include('messages.partials.form_message')
         </div>
     </div>
 @endsection

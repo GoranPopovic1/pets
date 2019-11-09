@@ -30,4 +30,22 @@ class Ad extends Model
     {
         return $this->belongsTo('App\User');
     }
+
+    public function scopeFilter($query, $params)
+    {
+        if ( isset($params['category']) ) {
+            $query->whereIn('category', $params['category']);
+        }
+
+        if ( isset($params['sex']) ) {
+            $query->where('sex', $params['sex']);
+        }
+
+        if ( isset($params['search']) ) {
+            $query->where('title', 'like', '%' . $params['search'] . '%');
+            $query->where('description', 'like', '%' . $params['search'] . '%');
+        }
+
+        return $query;
+    }
 }
