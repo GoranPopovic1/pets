@@ -46,7 +46,7 @@ Route::group(['middleware' => 'auth'], function() {
         Route::resource('ads', 'AdController')
             ->except(['index', 'show']);
 
-        Route::get('user-ads', 'AdController@userAds');
+        Route::get('user/ads', 'AdController@userAds');
 
         Route::get('delete/ad/image/{id}', 'AdController@deleteAdImage');
 
@@ -55,7 +55,12 @@ Route::group(['middleware' => 'auth'], function() {
 });
 
 Route::get('/', 'AdController@index');
+
 Route::get('/ads/{ad}', 'AdController@show');
+
+Route::post('/search', 'AdController@search');
+
+Route::get('users/{id}/ads', 'AdController@usersAds');
 
 Route::get('redirect/{driver}', 'Auth\LoginController@redirectToProvider')
     ->name('login.provider')

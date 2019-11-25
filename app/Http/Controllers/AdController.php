@@ -59,6 +59,7 @@ class AdController extends Controller
         $sex         = $request->get('sex');
 
         try {
+
             $ad = Ad::create([
                 'title'       => $title,
                 'description' => $description,
@@ -67,9 +68,10 @@ class AdController extends Controller
                 'user_id'     => $userId
             ]);
 
-            if($request->hasfile('images')) {
+            if ( $request->hasfile('images') ) {
                 $files = $request->file('images');
-                foreach ($files as $file) {
+
+                foreach ( $files as $file ) {
                     // Handle File Upload
 
                     // Get filename with the extension
@@ -113,10 +115,13 @@ class AdController extends Controller
 
         $thread = '';
 
-        if(!empty($authUser->threads) && !empty($adUser->threads)){
-            foreach ($authUser->threads as $authUserThread) {
-                foreach ($adUser->threads as $adUserThread) {
-                    if ($authUserThread->id == $adUserThread->id) {
+        if ( !empty($authUser->threads) && !empty($adUser->threads) ) {
+
+            foreach ( $authUser->threads as $authUserThread ) {
+
+                foreach ( $adUser->threads as $adUserThread ) {
+
+                    if ( $authUserThread->id == $adUserThread->id ) {
                         $thread = $adUserThread;
                     }
                 }
@@ -172,9 +177,10 @@ class AdController extends Controller
 
             $adPost->save();
 
-            if($request->hasfile('images')) {
+            if ( $request->hasfile('images') ) {
                 $files = $request->file('images');
-                foreach ($files as $file) {
+
+                foreach ( $files as $file ) {
                     // Handle File Upload
 
                     // Get filename with the extension
@@ -195,7 +201,7 @@ class AdController extends Controller
                 }
             }
 
-            return redirect('/my-ads');
+            return redirect('/user/ads');
 
         } catch (Exception $e) {
             report($e);
@@ -218,7 +224,7 @@ class AdController extends Controller
 
         try {
 
-            foreach ($adImages as $adImage) {
+            foreach ( $adImages as $adImage ) {
                 $path = str_replace('/storage', '', $adImage->image_path);
 
                 Storage::delete('/public'.$path);
@@ -241,7 +247,7 @@ class AdController extends Controller
 
         $userAds = Ad::where('user_id', $userId)->get();
 
-        return view('ads.user-ads', compact('userAds'));
+        return view('ads.user_ads', compact('userAds'));
     }
 
     public function deleteAdImage($id)
@@ -257,6 +263,36 @@ class AdController extends Controller
             $adImage->delete();
 
             return redirect()->back();
+
+        } catch (Exception $e) {
+            report($e);
+
+            return false;
+        }
+    }
+
+    public function usersAds($id)
+    {
+        $usersAds = Ad::where('user_id', $id)->get();
+
+        return view('ads.users_ads', compact('usersAds'));
+    }
+
+    public function search(Request $request)
+    {
+
+        try {
+
+            $params = $request->except('_token');
+
+            $ads = Ad::filter($params)->get();
+
+            foreach ( $ads as $ad ) {
+                $ad['images'] = $ad->images;
+                $ad['user'] = $ad->user;
+            }
+
+            return view('ads.search', compact('ads'));
 
         } catch (Exception $e) {
             report($e);

@@ -4,6 +4,6 @@
     <div class="container">
         @include('messages.partials.flash')
 
-        @each('messages.partials.thread', $threads, 'thread', 'messages.partials.no-threads')
+        @each('messages.partials.thread', $threads, 'thread', 'messages.partials.no_threads')
     </div>
 @endsection

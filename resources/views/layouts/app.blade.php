@@ -54,11 +54,11 @@
                             <li class="nav-item dropdown">
 
                                 <div>
-                                    <b-dropdown id="navbarDropdown" text="Bogdan" class="m-md-2">
+                                    <b-dropdown id="navbarDropdown" text="{{ auth()->user()->name }}" class="m-md-2">
                                         <b-dropdown-item class="dropdown-item" href="{{ url('users/' . auth()->user()->id ) }}">{{ __('Profil') }}</b-dropdown-item>
-                                        <b-dropdown-item class="dropdown-item" href="{{ url('user-ads' ) }}">{{ __('Moji oglasi') }}</b-dropdown-item>
+                                        <b-dropdown-item class="dropdown-item" href="{{ url('user/ads' ) }}">{{ __('Moji oglasi') }}</b-dropdown-item>
                                         <b-dropdown-item class="dropdown-item" href="{{ route('ads.create') }}">{{ __('Postavi oglas') }}</b-dropdown-item>
-                                        <b-dropdown-item class="dropdown-item" href="{{ route('messages.index') }}">{{ __('Poruke') }} @include('messages.unread-count')</b-dropdown-item>
+                                        <b-dropdown-item class="dropdown-item" href="{{ route('messages.index') }}">{{ __('Poruke') }} @include('messages.unread_count')</b-dropdown-item>
                                         <b-dropdown-item class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                             {{ __('Logout') }}
                                             <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
