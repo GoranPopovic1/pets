@@ -3,11 +3,6 @@
 @section('content')
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card-header">{{ __('Sortiranje') }}</div>
-            </div>
-        </div>
-        <div class="row justify-content-center">
             <div class="col-md-2">
                 <div class="card-header">{{ __('Filter') }}</div>
 
@@ -18,18 +13,17 @@
                         </div>
                     @endif
                     <div class="row">
-                        <form method="GET" action="{{ url('search') }}">
+                        <form method="POST" action="{{ url('search') }}">
                             @csrf
 
                             <div class="form-group row">
-                                <div class="col-md-6">
-                                    <?php
-                                    $categories = ['Psi', 'Mačke', 'Ptice', 'Konji', 'Ribice', 'Glodari', 'Reptili i amfibije', 'Ostalo'];
-
-                                    foreach( $categories as $cat) {
-                                        echo '<b-form-checkbox id="category-1" v-model="status" name="category[]" value="' . strtolower(str_replace(' ', '', $cat)) . '" unchecked-value="not_accepted"> ' . __($cat) . ' </b-form-checkbox>';
-                                    }
-                                    ?>
+                                <div class="col-md-12">
+                                    @php
+                                        $categories = ['Psi', 'Mačke', 'Ptice', 'Konji', 'Ribice', 'Glodari', 'Reptili i amfibije', 'Ostalo'];
+                                    @endphp
+                                    @foreach( $categories as $cat )
+                                        <input type="checkbox" id="category-1" name="category[]" value="{{ strtolower(str_replace(' ', '', $cat)) }}" /> {{ __($cat) }}<br/>
+                                    @endforeach
                                 </div>
                             </div>
 

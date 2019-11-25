@@ -4,8 +4,57 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "79f76117cba544495e301c9db8eee7ca",
+    "content-hash": "4ada5773449783812b831b84ca9e7f89",
     "packages": [
+        {
+            "name": "chocoholics/laravel-elastic-email",
+            "version": "v0.0.13",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/chocoholics/laravel-elastic-email.git",
+                "reference": "7568f0ed800edca6c47664b6e956aa8a2a877150"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/chocoholics/laravel-elastic-email/zipball/7568f0ed800edca6c47664b6e956aa8a2a877150",
+                "reference": "7568f0ed800edca6c47664b6e956aa8a2a877150",
+                "shasum": ""
+            },
+            "require": {
+                "guzzlehttp/guzzle": ">=6.3",
+                "laravel/framework": "5.1.x|5.2.x|5.3.x|5.4.x|5.5.x|5.6.x|5.7.x|5.8.x|6.*"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Chocoholics\\LaravelElasticEmail\\MailServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Chocoholics\\LaravelElasticEmail\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "email": "obura@tongoi.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A Laravel wrapper for Elastic Email",
+            "keywords": [
+                "elastic email",
+                "email",
+                "laravel"
+            ],
+            "time": "2019-09-21T15:40:05+00:00"
+        },
         {
             "name": "cmgmyr/messenger",
             "version": "2.19",

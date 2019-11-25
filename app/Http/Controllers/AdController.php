@@ -19,7 +19,7 @@ class AdController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+
     }
     /**
      * Display a listing of the resource.
@@ -59,6 +59,7 @@ class AdController extends Controller
         $sex         = $request->get('sex');
 
         try {
+
             $ad = Ad::create([
                 'title'       => $title,
                 'description' => $description,
@@ -67,9 +68,10 @@ class AdController extends Controller
                 'user_id'     => $userId
             ]);
 
-            if($request->hasfile('images')) {
+            if ( $request->hasfile('images') ) {
                 $files = $request->file('images');
-                foreach ($files as $file) {
+
+                foreach ( $files as $file ) {
                     // Handle File Upload
 
                     // Get filename with the extension
@@ -113,10 +115,15 @@ class AdController extends Controller
 
         $thread = '';
 
-        foreach ($authUser->threads as $authUserThread) {
-            foreach ($adUser->threads as $adUserThread) {
-                if($authUserThread->id == $adUserThread->id) {
-                    $thread = $adUserThread;
+        if ( !empty($authUser->threads) && !empty($adUser->threads) ) {
+
+            foreach ( $authUser->threads as $authUserThread ) {
+
+                foreach ( $adUser->threads as $adUserThread ) {
+
+                    if ( $authUserThread->id == $adUserThread->id ) {
+                        $thread = $adUserThread;
+                    }
                 }
             }
         }
@@ -170,9 +177,10 @@ class AdController extends Controller
 
             $adPost->save();
 
-            if($request->hasfile('images')) {
+            if ( $request->hasfile('images') ) {
                 $files = $request->file('images');
-                foreach ($files as $file) {
+
+                foreach ( $files as $file ) {
                     // Handle File Upload
 
                     // Get filename with the extension
@@ -216,7 +224,7 @@ class AdController extends Controller
 
         try {
 
-            foreach ($adImages as $adImage) {
+            foreach ( $adImages as $adImage ) {
                 $path = str_replace('/storage', '', $adImage->image_path);
 
                 Storage::delete('/public'.$path);
@@ -278,6 +286,11 @@ class AdController extends Controller
             $params = $request->except('_token');
 
             $ads = Ad::filter($params)->get();
+
+            foreach ( $ads as $ad ) {
+                $ad['images'] = $ad->images;
+                $ad['user'] = $ad->user;
+            }
 
             return view('ads.search', compact('ads'));
 
