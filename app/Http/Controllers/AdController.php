@@ -294,6 +294,8 @@ class AdController extends Controller
 
             return view('ads.search', compact('ads'));
 
+            return json_encode($ads);
+
         } catch (Exception $e) {
             report($e);
 

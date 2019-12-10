@@ -41,10 +41,10 @@ class Ad extends Model
             $query->where('sex', $params['sex']);
         }
 
-        if ( isset($params['search']) ) {
-            $query->where('title', 'like', '%' . $params['search'] . '%');
-            $query->where('description', 'like', '%' . $params['search'] . '%');
-        }
+//        if ( isset($params['search']) ) {
+//            $query->where('title', 'like', '%' . $params['search'] . '%');
+//            $query->where('description', 'like', '%' . $params['search'] . '%');
+//        }
 
         return $query;
     }
