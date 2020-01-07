@@ -12,7 +12,7 @@ class Ad extends Model
      * @var array
      */
     protected $fillable = [
-        'title', 'description', 'category', 'sex', 'user_id'
+        'title', 'description', 'category_id', 'sex_id', 'user_id'
     ];
 
     /**
@@ -31,21 +31,37 @@ class Ad extends Model
         return $this->belongsTo('App\User');
     }
 
+    /**
+     * Get the category that the ad belongs to.
+     */
+    public function category()
+    {
+        return $this->belongsTo('App\Category');
+    }
+
+    /**
+     * Get the sex that the ad belongs to.
+     */
+    public function sex()
+    {
+        return $this->belongsTo('App\Sex');
+    }
+
+
     public function scopeFilter($query, $params)
     {
-        if ( isset($params['category']) ) {
-            $query->whereIn('category', $params['category']);
+        if ( !empty($params['category']) ) {
+            $query->where('category_id', $params['category']);
         }
 
-        if ( isset($params['sex']) ) {
-            $query->where('sex', $params['sex']);
+        if ( !empty($params['sex']) ) {
+            $query->where('sex_id', $params['sex']);
         }
 
-        if ( isset($params['search']) ) {
-            $query->where('title', 'like', '%' . $params['search'] . '%');
-            $query->where('description', 'like', '%' . $params['search'] . '%');
+        if ( !empty($params['search-term']) ) {
+            $query->where('title', 'like', '%' . $params['search-term'] . '%');
+            $query->orWhere('description', 'like', '%' . $params['search-term'] . '%');
         }
 
-        return $query;
     }
 }

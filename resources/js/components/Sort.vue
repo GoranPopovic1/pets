@@ -5,9 +5,7 @@
 
             <div class="card-body">
                 <form action="javascript:void(0)">
-
                     <div class="form-group">
-
                         <select id="date"
                                 class="form-control"
                                 name="date" autocomplete="category" autofocus @change="handleSorting($event)">
@@ -15,35 +13,21 @@
                             <option value="asc">ASC</option>
                             <option value="desc">DESC</option>
                         </select>
-
-                        <!--@error('date')-->
-                        <!--<span class="invalid-feedback" role="alert">-->
-                        <!--<strong>{{ $message }}</strong>-->
-                        <!--</span>-->
-                        <!--@enderror-->
                     </div>
-
-                    <!--<div class="form-group row mb-0">-->
-                    <!--<button type="submit" class="btn btn-primary">-->
-                    <!--{{ __('Sortiraj') }}-->
-                    <!--</button>-->
-                    <!--</div>-->
-
                 </form>
             </div>
         </div>
 
         <div class="list-holder">
             <div class="card mb-2" v-for="ad_data in ads_data" v-bind:key="ad_data.id">
-                <div class="card-header"><a :href="'ads/' + ad_data.id">Oglas</a></div>
+                <div class="card-header"><a :href="'ads/' + ad_data.id">{{ ad_data.title }}</a></div>
 
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-6">
-                            <p class="card-text">Naslov: {{ ad_data.title }}</p>
                             <img :src="ad_data.images[0].image_path" alt="ad-image" style="height: 100px;" />
                             <p class="card-text">Opis: {{ ad_data.description }}</p>
-                            <p class="card-text">Pol: {{ ad_data.sex }}</p>
+                            <p class="card-text">Pol: {{ ad_data.sex.name }}</p>
                             <p class="card-text">Datum: {{ ad_data.created_at | moment("D.M.YYYY") }}</p>
                         </div>
                         <div class="col-md-6">
@@ -64,27 +48,15 @@
         props: ['ads'],
         mounted() {
             console.log('Component mounted.');
-            console.log(JSON.parse(this.ads));
+            // console.log(JSON.parse(this.ads));
         },
         data() {
             return {
-                ads_data: [],
-                ad_data: {
-                    id: '',
-                    title: '',
-                    description: '',
-                    category: '',
-                    sex: '',
-                    images: [],
-                    user: {},
-                    user_id: '',
-                    created_at: '',
-                    updated_at: ''
-                }
+                ads_data: []
             }
         },
         created() {
-            this.ads_data = JSON.parse(this.ads);
+            this.ads_data = this.ads;
             console.log(this.ads_data);
         },
         methods: {

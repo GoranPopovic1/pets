@@ -58,7 +58,9 @@ Route::get('/', 'AdController@index');
 
 Route::get('/ads/{ad}', 'AdController@show');
 
-Route::post('/search', 'AdController@search');
+Route::get('/search', 'AdController@search');
+Route::get('/search/results', 'AdController@searchResults');
+Route::post('/search/form', 'AdController@searchFormData');
 
 Route::get('users/{id}/ads', 'AdController@usersAds');
 

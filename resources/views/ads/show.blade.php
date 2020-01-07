@@ -14,7 +14,7 @@
                                     <img src="{{ asset($image->image_path) }}" alt="ad-image" style="height: 100px;" />
                                 @endforeach
                                 <p class="card-text">{{ __('Opis:') }} {{ $ad->description }}</p>
-                                <p class="card-text">{{ __('Pol:') }} {{ $ad->sex }}</p>
+                                <p class="card-text">{{ __('Pol:') }} {{ $ad->sex->name }}</p>
                                 <p class="card-text">{{ __('Datum:') }} {{ $ad->created_at }}</p>
                             </div>
                             <div class="col-md-6">
