@@ -16,7 +16,7 @@
                                             @break
                                         @endforeach
                                         <p class="card-text">{{ __('Opis:') }} {{ $usersAd->description }}</p>
-                                        <p class="card-text">{{ __('Pol:') }} {{ $usersAd->sex }}</p>
+                                        <p class="card-text">{{ __('Pol:') }} {{ $usersAd->sex->name }}</p>
                                         <p class="card-text">{{ __('Datum:') }} {{ $usersAd->created_at }}</p>
                                     </div>
                                     <div class="col-md-6">

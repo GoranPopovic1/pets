@@ -17,11 +17,13 @@ class CreateAdsTable extends Migration
             $table->bigIncrements('id');
             $table->string('title');
             $table->text('description');
-            $table->string('category');
-            $table->string('sex');
+            $table->unsignedBigInteger('category_id');
+            $table->unsignedBigInteger('sex_id');
             $table->unsignedBigInteger('user_id');
             $table->timestamps();
 
+            $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
+            $table->foreign('sex_id')->references('id')->on('sexes')->onDelete('cascade');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }

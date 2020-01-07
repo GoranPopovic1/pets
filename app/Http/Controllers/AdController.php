@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Ad;
 use App\AdImage;
 use App\User;
+use App\Category;
+use App\Sex;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreAd;
 use App\Http\Requests\UpdateAd;
@@ -21,6 +23,7 @@ class AdController extends Controller
     {
 
     }
+
     /**
      * Display a listing of the resource.
      *
@@ -28,9 +31,11 @@ class AdController extends Controller
      */
     public function index()
     {
-        $ads = Ad::all();
+        $ads = Ad::orderBy('id', 'desc')->take(5)->get();
+        $categories = Category::all();
+        $sexes = Sex::all();
 
-        return view('ads.index', compact('ads'));
+        return view('ads.index', compact('ads', 'categories', 'sexes'));
     }
 
     /**
@@ -40,7 +45,10 @@ class AdController extends Controller
      */
     public function create()
     {
-        return view('ads.create');
+        $categories = Category::all();
+        $sexes = Sex::all();
+
+        return view('ads.create', compact('categories', 'sexes'));
     }
 
     /**
@@ -51,27 +59,28 @@ class AdController extends Controller
      */
     public function store(StoreAd $request)
     {
+        $validated = $request->validated();
         $userId = auth()->user()->id;
 
-        $title       = $request->get('title');
-        $description = $request->get('description');
-        $category    = $request->get('category');
-        $sex         = $request->get('sex');
+        $title = $validated['title'];
+        $description = $validated['description'];
+        $category_id = $validated['category'];
+        $sex_id = $validated['sex'];
 
         try {
 
             $ad = Ad::create([
                 'title'       => $title,
                 'description' => $description,
-                'category'    => $category,
-                'sex'         => $sex,
+                'category_id' => $category_id,
+                'sex_id'      => $sex_id,
                 'user_id'     => $userId
             ]);
 
-            if ( $request->hasfile('images') ) {
+            if ($request->hasfile('images')) {
                 $files = $request->file('images');
 
-                foreach ( $files as $file ) {
+                foreach ($files as $file) {
                     // Handle File Upload
 
                     // Get filename with the extension
@@ -81,7 +90,7 @@ class AdController extends Controller
                     // Get just ext
                     $extension = $file->getClientOriginalExtension();
                     // Filename to store
-                    $fileNameToStore = $filename.'_'.time().'.'.$extension;
+                    $fileNameToStore = $filename . '_' . time() . '.' . $extension;
                     // Upload Image
                     $file->storeAs('public/images/post', $fileNameToStore); // post = ads, added because of ad blocker
 
@@ -115,13 +124,13 @@ class AdController extends Controller
 
         $thread = '';
 
-        if ( !empty($authUser->threads) && !empty($adUser->threads) ) {
+        if (!empty($authUser->threads) && !empty($adUser->threads)) {
 
-            foreach ( $authUser->threads as $authUserThread ) {
+            foreach ($authUser->threads as $authUserThread) {
 
-                foreach ( $adUser->threads as $adUserThread ) {
+                foreach ($adUser->threads as $adUserThread) {
 
-                    if ( $authUserThread->id == $adUserThread->id ) {
+                    if ($authUserThread->id == $adUserThread->id) {
                         $thread = $adUserThread;
                     }
                 }
@@ -141,7 +150,10 @@ class AdController extends Controller
     {
         $adPost = Ad::findOrFail($ad->id);
 
-        return view('ads.edit', compact('adPost'));
+        $categories = Category::all();
+        $sexes = Sex::all();
+
+        return view('ads.edit', compact('adPost', 'categories', 'sexes'));
     }
 
     /**
@@ -153,34 +165,35 @@ class AdController extends Controller
      */
     public function update(UpdateAd $request, Ad $ad)
     {
+        $validated = $request->validated();
         $adPost = Ad::findOrFail($ad->id);
 
-        $title       = $request->get('title');
-        $description = $request->get('description');
-        $category    = $request->get('category');
-        $sex         = $request->get('sex');
+        $title = $validated['title'];
+        $description = $validated['description'];
+        $category_id = $validated['category'];
+        $sex_id = $validated['sex'];
 
         try {
 
             $adPost->title = $title;
             $adPost->description = $description;
 
-            if ( $category !== null ) {
-                $adPost->category = $category;
+            if ($category_id !== '') {
+                $adPost->category_id = $category_id;
             }
 
-            if( $sex !== null ) {
-                $adPost->sex = $sex;
+            if ($sex_id !== '') {
+                $adPost->sex_id = $sex_id;
             }
 
             $adPost->user_id = $ad->id;
 
             $adPost->save();
 
-            if ( $request->hasfile('images') ) {
+            if ($request->hasfile('images')) {
                 $files = $request->file('images');
 
-                foreach ( $files as $file ) {
+                foreach ($files as $file) {
                     // Handle File Upload
 
                     // Get filename with the extension
@@ -190,7 +203,7 @@ class AdController extends Controller
                     // Get just ext
                     $extension = $file->getClientOriginalExtension();
                     // Filename to store
-                    $fileNameToStore = $filename.'_'.time().'.'.$extension;
+                    $fileNameToStore = $filename . '_' . time() . '.' . $extension;
                     // Upload Image
                     $file->storeAs('public/images/post', $fileNameToStore); // post = ads, added because of ad blocker
 
@@ -224,10 +237,10 @@ class AdController extends Controller
 
         try {
 
-            foreach ( $adImages as $adImage ) {
+            foreach ($adImages as $adImage) {
                 $path = str_replace('/storage', '', $adImage->image_path);
 
-                Storage::delete('/public'.$path);
+                Storage::delete('/public' . $path);
             }
 
             $adPost->delete();
@@ -278,28 +291,84 @@ class AdController extends Controller
         return view('ads.users_ads', compact('usersAds'));
     }
 
-    public function search(Request $request)
+    public function searchFormData(Request $request)
     {
-
         try {
 
             $params = $request->except('_token');
 
-            $ads = Ad::filter($params)->get();
-
-            foreach ( $ads as $ad ) {
-                $ad['images'] = $ad->images;
-                $ad['user'] = $ad->user;
+            if(!array_filter($params)) {
+                return redirect('/search?page=1');
             }
 
-            return view('ads.search', compact('ads'));
-
-            return json_encode($ads);
+            return redirect('/search?' . http_build_query($params) . '&page=1');
 
         } catch (Exception $e) {
             report($e);
 
             return false;
         }
+    }
+
+    public function searchResults(Request $request)
+    {
+        try {
+            $params = $request->query();
+
+            $sort = [
+                'column' => 'created_at',
+                'direction' => 'desc'
+            ];
+
+            if(isset($params['sort'])) {
+                switch ($params['sort']) {
+                    case 'date-asc':
+                        $sort['column'] = 'created_at';
+                        $sort['direction'] = 'asc';
+                        break;
+                    case 'name-asc':
+                        $sort['column'] = 'title';
+                        $sort['direction'] = 'asc';
+                        break;
+                    case 'name-desc':
+                        $sort['column'] = 'title';
+                        $sort['direction'] = 'desc';
+                        break;
+                }
+            }
+
+            $ads = Ad::filter($params)->orderBy($sort['column'], $sort['direction'])->paginate(2);
+
+            if(array_filter($params)) {
+                $ads->appends($params);
+            }
+
+            foreach ($ads as $ad) {
+                $ad['images'] = $ad->images;
+                $ad['user'] = $ad->user;
+                $ad['sex'] = $ad->sex;
+            }
+
+            $categories = Category::all();
+            $sexes = Sex::all();
+
+            $data = [
+                'ads' => $ads,
+                'categories' => $categories,
+                'sexes' => $sexes,
+            ];
+
+            return response()->json($data);
+
+        } catch (Exception $e) {
+            report($e);
+
+            return false;
+        }
+    }
+
+    public function search()
+    {
+        return view('ads.search');
     }
 }

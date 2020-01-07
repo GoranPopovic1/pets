@@ -1910,74 +1910,155 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
-  /*props: ['ads'],*/
-  name: "AdsFilter",
+  // props: ['ads', 'categories', 'sexes'],
+  name: 'AdsFilter',
   mounted: function mounted() {
-    console.log('Component mounted.');
-    /*console.log(JSON.parse(this.ads));*/
+    console.log('Component mounted.'); // console.log(JSON.parse(this.ads));
   },
   data: function data() {
     return {
-      ads_categories: ['Psi', 'Mačke', 'Ptice', 'Konji', 'Ribice', 'Glodari', 'Reptili i amfibije', 'Ostalo'],
+      ads_categories: [],
+      ads_sexes: [],
+      ads_paginator_data: {},
       ads_data: [],
-      ad_data: {
-        id: '',
-        title: '',
-        description: '',
-        category: '',
-        sex: '',
-        images: [],
-        user: {},
-        user_id: '',
-        created_at: '',
-        updated_at: ''
-      }
+      selected_category: '',
+      selected_sex: '',
+      selected_sorting_rule: '',
+      search_term: '',
+      pagination: {}
     };
   },
   created: function created() {
-    /*            this.ads_data = JSON.parse(this.ads);
-                console.log(this.ads_data);*/
+    // this.ads_paginator_data = JSON.parse(this.ads);
+    // this.ads_data = this.ads_paginator_data.data;
+    // this.ads_categories = JSON.parse(this.categories);
+    // this.ads_sex = JSON.parse(this.sexes);
+    this.fetchSearchResults(); // console.log(this.ads_data);
   },
   methods: {
-    filterAds: function filterAds() {
+    fetchSearchResults: function fetchSearchResults(event) {
       var _this = this;
 
-      this.article.user_id = this.$root.$data.user_id;
-      this.article.comments_count = 0;
-      var formData = new FormData();
-      formData.append('id', this.article.id);
-      fetch('search', {
-        method: 'POST',
-        body: formData
-      }).then(function (res) {
+      var n = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+      var queryParams = window.location.search,
+          pageUrl = 'search/results' + queryParams,
+          newPageUrl = pageUrl,
+          // if n == null
+      modifiedNewPageUrl;
+
+      if (typeof event !== 'undefined') {
+        console.log(event);
+
+        if (event.target.name === 'sort' || event.target.name === 'category' || event.target.name === 'sex' || event.target.id === 'search-button') {
+          if (event.target.name === 'sort') {
+            queryParams = this.removeAddParameter(queryParams, 'sort', this.selected_sorting_rule);
+          }
+
+          if (event.target.name === 'category') {
+            queryParams = this.removeAddParameter(queryParams, 'category', this.selected_category);
+          }
+
+          if (event.target.name === 'sex') {
+            queryParams = this.removeAddParameter(queryParams, 'sex', this.selected_sex);
+          }
+
+          if (event.target.id === 'search-button') {
+            queryParams = this.removeAddParameter(queryParams, 'search-term', this.search_term);
+          }
+
+          pageUrl = 'search/results' + queryParams;
+          newPageUrl = this.removeAddParameter(pageUrl, 'page', 1);
+          modifiedNewPageUrl = newPageUrl.replace('/results', '');
+          history.pushState(null, '', modifiedNewPageUrl);
+        }
+
+        if (event.target.className === 'page-link') {
+          if (n !== null) {
+            newPageUrl = this.removeAddParameter(pageUrl, 'page', n);
+            modifiedNewPageUrl = newPageUrl.replace('/results', '');
+            history.pushState(null, '', modifiedNewPageUrl);
+          }
+        }
+      }
+
+      fetch(newPageUrl).then(function (res) {
         return res.json();
       }).then(function (data) {
-        _this.article.title = '';
-        alert('Article Added');
-
-        _this.fetchArticles();
+        console.log(data);
+        _this.ads_paginator_data = data.ads;
+        _this.ads_data = _this.ads_paginator_data.data;
+        _this.ads_categories = data.categories;
+        _this.ads_sexes = data.sexes;
       })["catch"](function (err) {
         return console.log(err);
       });
-    }
-    /*            handleSorting(event){
-                    if(event.target.value == 'asc') {
-                        this.ads_data.sort((a, b) => {
-                            return new Date(a.created_at) - new Date(b.created_at);
-                        });
-                    } else {
-                        this.ads_data.sort((a, b) => {
-                            return new Date(b.created_at) - new Date(a.created_at);
-                        });
-                    }
-                     return this.ads_data;
-                }*/
+    },
+    removeAddParameter: function removeAddParameter(queryString, key, value) {
+      var regex = new RegExp("([&?])(".concat(key, "=)([^&]+)"));
+      var result = queryString.match(regex),
+          newQuery;
 
-  },
-  filters: {
-    formatCategory: function formatCategory(category) {
-      return category.replace(/ /g, "").toLowerCase();
+      if (result === null) {
+        if (value !== '') {
+          newQuery = queryString + '&' + key + '=' + value;
+        }
+      } else {
+        if (result[0].startsWith('?')) {
+          newQuery = queryString.replace(regex, '' + '$2$3');
+
+          if (value === '') {
+            newQuery = queryString.replace(regex, '?').replace('&', '');
+          }
+        } else {
+          newQuery = queryString.replace(regex, '');
+        }
+
+        if (value !== '') {
+          newQuery = queryString.replace(regex, '$1$2' + value);
+        }
+      }
+
+      return newQuery;
     }
   }
 });
@@ -2071,47 +2152,18 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['ads'],
   mounted: function mounted() {
-    console.log('Component mounted.');
-    console.log(JSON.parse(this.ads));
+    console.log('Component mounted.'); // console.log(JSON.parse(this.ads));
   },
   data: function data() {
     return {
-      ads_data: [],
-      ad_data: {
-        id: '',
-        title: '',
-        description: '',
-        category: '',
-        sex: '',
-        images: [],
-        user: {},
-        user_id: '',
-        created_at: '',
-        updated_at: ''
-      }
+      ads_data: []
     };
   },
   created: function created() {
-    this.ads_data = JSON.parse(this.ads);
+    this.ads_data = this.ads;
     console.log(this.ads_data);
   },
   methods: {
@@ -51215,157 +51267,450 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "row justify-content-center" }, [
     _c("div", { staticClass: "col-md-2" }, [
-      _c("div", { staticClass: "card-header" }, [_vm._v("Filter")]),
-      _vm._v(" "),
       _c("div", { staticClass: "card-body" }, [
         _c("div", { staticClass: "row" }, [
           _c(
             "form",
-            {
-              attrs: { method: "POST", action: "javascript:void(0)" },
-              on: {
-                submit: function($event) {
-                  $event.preventDefault()
-                  return _vm.filterAds($event)
-                }
-              }
-            },
+            { attrs: { method: "POST", action: "javascript:void(0)" } },
             [
               _c("div", { staticClass: "form-group row" }, [
                 _c(
-                  "div",
-                  { staticClass: "col-md-12" },
-                  _vm._l(_vm.ads_categories, function(ad_category) {
-                    return _c("div", { staticClass: "checkbox-holder mb-2" }, [
-                      _c("input", {
-                        attrs: { type: "checkbox", name: "category[]" },
-                        domProps: {
-                          value: _vm._f("formatCategory")(ad_category)
+                  "label",
+                  {
+                    staticClass: "col-md-4 col-form-label text-md-right",
+                    attrs: { for: "category" }
+                  },
+                  [_vm._v("Kategorija")]
+                ),
+                _vm._v(" "),
+                _c(
+                  "select",
+                  {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.selected_category,
+                        expression: "selected_category"
+                      }
+                    ],
+                    staticClass: "form-control",
+                    attrs: { id: "category", name: "category" },
+                    on: {
+                      change: [
+                        function($event) {
+                          var $$selectedVal = Array.prototype.filter
+                            .call($event.target.options, function(o) {
+                              return o.selected
+                            })
+                            .map(function(o) {
+                              var val = "_value" in o ? o._value : o.value
+                              return val
+                            })
+                          _vm.selected_category = $event.target.multiple
+                            ? $$selectedVal
+                            : $$selectedVal[0]
+                        },
+                        function($event) {
+                          return _vm.fetchSearchResults($event)
                         }
-                      }),
-                      _vm._v(_vm._s(ad_category)),
-                      _c("br")
-                    ])
-                  }),
-                  0
+                      ]
+                    }
+                  },
+                  [
+                    _c("option", { attrs: { value: "" } }, [_vm._v("Izaberi")]),
+                    _vm._v(" "),
+                    _vm._l(_vm.ads_categories, function(ad_category) {
+                      return _c(
+                        "option",
+                        { domProps: { value: ad_category.id } },
+                        [
+                          _vm._v(
+                            "\n                                " +
+                              _vm._s(ad_category.name) +
+                              "\n                            "
+                          )
+                        ]
+                      )
+                    })
+                  ],
+                  2
                 )
               ]),
               _vm._v(" "),
-              _vm._m(0),
-              _vm._v(" "),
-              _vm._m(1),
-              _vm._v(" "),
-              _vm._m(2)
+              _c("div", { staticClass: "form-group row" }, [
+                _c(
+                  "label",
+                  {
+                    staticClass: "col-md-4 col-form-label text-md-right",
+                    attrs: { for: "sex" }
+                  },
+                  [_vm._v("Pol")]
+                ),
+                _vm._v(" "),
+                _c(
+                  "select",
+                  {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.selected_sex,
+                        expression: "selected_sex"
+                      }
+                    ],
+                    staticClass: "form-control",
+                    attrs: { id: "sex", name: "sex" },
+                    on: {
+                      change: [
+                        function($event) {
+                          var $$selectedVal = Array.prototype.filter
+                            .call($event.target.options, function(o) {
+                              return o.selected
+                            })
+                            .map(function(o) {
+                              var val = "_value" in o ? o._value : o.value
+                              return val
+                            })
+                          _vm.selected_sex = $event.target.multiple
+                            ? $$selectedVal
+                            : $$selectedVal[0]
+                        },
+                        function($event) {
+                          return _vm.fetchSearchResults($event)
+                        }
+                      ]
+                    }
+                  },
+                  [
+                    _c("option", { attrs: { value: "" } }, [_vm._v("Izaberi")]),
+                    _vm._v(" "),
+                    _vm._l(_vm.ads_sexes, function(ad_sex) {
+                      return _c("option", { domProps: { value: ad_sex.id } }, [
+                        _vm._v(
+                          "\n                                " +
+                            _vm._s(ad_sex.name) +
+                            "\n                            "
+                        )
+                      ])
+                    })
+                  ],
+                  2
+                )
+              ])
             ]
           )
         ])
       ])
     ]),
     _vm._v(" "),
-    _vm._m(3)
-  ])
-}
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "form-group row" }, [
-      _c(
-        "label",
-        {
-          staticClass: "col-md-4 col-form-label text-md-right",
-          attrs: { for: "sex" }
-        },
-        [_vm._v("Pol")]
-      ),
-      _vm._v(" "),
-      _c(
-        "select",
-        {
-          staticClass: "form-control",
-          attrs: {
-            id: "sex",
-            name: "sex",
-            autocomplete: "category",
-            autofocus: ""
-          }
-        },
-        [
-          _c("option", { attrs: { value: "" } }, [_vm._v("Izaberi")]),
-          _vm._v(" "),
-          _c("option", { attrs: { value: "muški" } }, [_vm._v("Muški")]),
-          _vm._v(" "),
-          _c("option", { attrs: { value: "ženski" } }, [_vm._v("Ženski")]),
-          _vm._v(" "),
-          _c("option", { attrs: { value: "oba" } }, [_vm._v("Oba Pola")])
-        ]
-      )
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "form-group row" }, [
-      _c("input", {
-        staticClass: "form-control",
-        attrs: {
-          id: "search",
-          type: "text",
-          placeholder: "Pretraži oglase",
-          name: "search",
-          autocomplete: "search"
-        }
-      })
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "form-group row mb-0" }, [
-      _c(
-        "button",
-        { staticClass: "btn btn-primary", attrs: { type: "submit" } },
-        [_vm._v("Pretraga")]
-      )
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "col-md-8" }, [
-      _c("div", { staticClass: "card mb-2" }, [
-        _c("div", { staticClass: "card-header" }, [
-          _c("a", { attrs: { href: "#" } }, [_vm._v("tekst")])
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "card-body" }, [
-          _c("div", { staticClass: "row" }, [
-            _c("div", { staticClass: "col-md-6" }, [
-              _c("img", {
-                staticStyle: { height: "100px" },
-                attrs: { src: "", alt: "ad-image" }
-              }),
-              _vm._v(" "),
-              _c("p", { staticClass: "card-text" }, [_vm._v("Opis: ")]),
-              _vm._v(" "),
-              _c("p", { staticClass: "card-text" }, [_vm._v("Pol: ")]),
-              _vm._v(" "),
-              _c("p", { staticClass: "card-text" }, [_vm._v("Datum: ")])
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "col-md-6" }, [
-              _c("p", { staticClass: "card-text" }, [_vm._v("Mesto/Grad: ")])
+    _c(
+      "div",
+      { staticClass: "col-md-8" },
+      [
+        _c("div", { staticClass: "row" }, [
+          _c("div", { staticClass: "col-md-4" }, [
+            _c("form", { attrs: { action: "javascript:void(0)" } }, [
+              _c("div", { staticClass: "form-group" }, [
+                _c(
+                  "label",
+                  {
+                    staticClass:
+                      "col-form-label text-md-right d-inline-block align-middle",
+                    attrs: { for: "sort" }
+                  },
+                  [_vm._v("Sortiraj po:")]
+                ),
+                _vm._v(" "),
+                _c(
+                  "select",
+                  {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.selected_sorting_rule,
+                        expression: "selected_sorting_rule"
+                      }
+                    ],
+                    staticClass: "form-control d-inline-block align-middle",
+                    attrs: {
+                      id: "sort",
+                      name: "sort",
+                      autocomplete: "sort",
+                      autofocus: ""
+                    },
+                    on: {
+                      change: [
+                        function($event) {
+                          var $$selectedVal = Array.prototype.filter
+                            .call($event.target.options, function(o) {
+                              return o.selected
+                            })
+                            .map(function(o) {
+                              var val = "_value" in o ? o._value : o.value
+                              return val
+                            })
+                          _vm.selected_sorting_rule = $event.target.multiple
+                            ? $$selectedVal
+                            : $$selectedVal[0]
+                        },
+                        function($event) {
+                          return _vm.fetchSearchResults($event, null)
+                        }
+                      ]
+                    }
+                  },
+                  [
+                    _c("option", { attrs: { value: "" } }, [
+                      _vm._v("najnovijem")
+                    ]),
+                    _vm._v(" "),
+                    _c("option", { attrs: { value: "date-asc" } }, [
+                      _vm._v("najstarijem")
+                    ]),
+                    _vm._v(" "),
+                    _c("option", { attrs: { value: "name-asc" } }, [
+                      _vm._v("nazivu A - Ž")
+                    ]),
+                    _vm._v(" "),
+                    _c("option", { attrs: { value: "name-desc" } }, [
+                      _vm._v("nazivu Ž - A")
+                    ])
+                  ]
+                )
+              ])
             ])
           ])
+        ]),
+        _vm._v(" "),
+        _vm._l(_vm.ads_data, function(ad_data) {
+          return _c("div", { staticClass: "card mb-2" }, [
+            _c("div", { staticClass: "card-header" }, [
+              _c("a", { attrs: { href: "ads/" + ad_data.id } }, [
+                _vm._v(_vm._s(ad_data.title))
+              ])
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "card-body" }, [
+              _c("div", { staticClass: "row" }, [
+                _c("div", { staticClass: "col-md-6" }, [
+                  _c("img", {
+                    staticStyle: { height: "100px" },
+                    attrs: {
+                      src: ad_data.images[0].image_path,
+                      alt: "ad-image"
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c("p", { staticClass: "card-text" }, [
+                    _vm._v("Opis: " + _vm._s(ad_data.description))
+                  ]),
+                  _vm._v(" "),
+                  _c("p", { staticClass: "card-text" }, [
+                    _vm._v("Pol: " + _vm._s(ad_data.sex.name))
+                  ]),
+                  _vm._v(" "),
+                  _c("p", { staticClass: "card-text" }, [
+                    _vm._v(
+                      "Datum: " +
+                        _vm._s(_vm._f("moment")(ad_data.created_at, "D.M.YYYY"))
+                    )
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "col-md-6" }, [
+                  _c("p", { staticClass: "card-text" }, [
+                    _vm._v("Mesto/Grad: " + _vm._s(ad_data.user.city))
+                  ])
+                ])
+              ]),
+              _vm._v(" "),
+              _c("div", [
+                _c(
+                  "a",
+                  {
+                    staticClass: "btn btn-secondary",
+                    attrs: { href: "ads/" + ad_data.id + "/edit" }
+                  },
+                  [_vm._v("Izmeni oglas")]
+                )
+              ])
+            ])
+          ])
+        })
+      ],
+      2
+    ),
+    _vm._v(" "),
+    _c("div", { staticClass: "col-md-2" }, [
+      _c("div", { staticClass: "card-header" }, [_vm._v("Pretraga")]),
+      _vm._v(" "),
+      _c("div", { staticClass: "card-body" }, [
+        _c("div", { staticClass: "row" }, [
+          _c(
+            "form",
+            { attrs: { method: "POST", action: "javascript:void(0)" } },
+            [
+              _c("div", { staticClass: "form-group row" }, [
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.search_term,
+                      expression: "search_term"
+                    }
+                  ],
+                  staticClass: "form-control",
+                  attrs: {
+                    id: "search-term",
+                    type: "text",
+                    placeholder: "Pretraži oglase",
+                    name: "search-term",
+                    autocomplete: "search"
+                  },
+                  domProps: { value: _vm.search_term },
+                  on: {
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.search_term = $event.target.value
+                    }
+                  }
+                })
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "form-group row mb-0" }, [
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-primary",
+                    attrs: { id: "search-button", type: "submit" },
+                    on: {
+                      click: function($event) {
+                        return _vm.fetchSearchResults($event, null)
+                      }
+                    }
+                  },
+                  [_vm._v("Pretraga")]
+                )
+              ])
+            ]
+          )
         ])
       ])
+    ]),
+    _vm._v(" "),
+    _c("nav", { staticClass: "mt-5" }, [
+      _c(
+        "ul",
+        { staticClass: "pagination" },
+        [
+          _c(
+            "li",
+            {
+              class: [
+                { disabled: !_vm.ads_paginator_data.prev_page_url },
+                "page-item"
+              ]
+            },
+            [
+              _c(
+                "a",
+                {
+                  staticClass: "page-link",
+                  attrs: { href: "#", "aria-label": "Previous" },
+                  on: {
+                    click: function($event) {
+                      $event.preventDefault()
+                      return _vm.fetchSearchResults(
+                        _vm.ads_paginator_data.prev_page_url,
+                        ""
+                      )
+                    }
+                  }
+                },
+                [
+                  _c("span", { attrs: { "aria-hidden": "true" } }, [
+                    _vm._v("«")
+                  ])
+                ]
+              )
+            ]
+          ),
+          _vm._v(" "),
+          _vm._l(_vm.ads_paginator_data.last_page, function(n) {
+            return _c(
+              "li",
+              {
+                class: [
+                  { active: n === _vm.ads_paginator_data.current_page },
+                  "page-item"
+                ]
+              },
+              [
+                _c(
+                  "a",
+                  {
+                    staticClass: "page-link",
+                    attrs: { href: "#" },
+                    on: {
+                      click: function($event) {
+                        $event.preventDefault()
+                        return _vm.fetchSearchResults($event, n)
+                      }
+                    }
+                  },
+                  [
+                    _vm._v(_vm._s(n) + "\n                    "),
+                    _c("span", { staticClass: "sr-only" })
+                  ]
+                )
+              ]
+            )
+          }),
+          _vm._v(" "),
+          _c(
+            "li",
+            {
+              class: [
+                { disabled: !_vm.ads_paginator_data.next_page_url },
+                "page-item"
+              ]
+            },
+            [
+              _c(
+                "a",
+                {
+                  staticClass: "page-link",
+                  attrs: { href: "#", "aria-label": "Next" },
+                  on: {
+                    click: function($event) {
+                      $event.preventDefault()
+                      return _vm.fetchSearchResults(
+                        _vm.ads_paginator_data.next_page_url,
+                        ""
+                      )
+                    }
+                  }
+                },
+                [
+                  _c("span", { attrs: { "aria-hidden": "true" } }, [
+                    _vm._v("»")
+                  ])
+                ]
+              )
+            ]
+          )
+        ],
+        2
+      )
     ])
-  }
-]
+  ])
+}
+var staticRenderFns = []
 render._withStripped = true
 
 
@@ -51478,16 +51823,14 @@ var render = function() {
       _vm._l(_vm.ads_data, function(ad_data) {
         return _c("div", { key: ad_data.id, staticClass: "card mb-2" }, [
           _c("div", { staticClass: "card-header" }, [
-            _c("a", { attrs: { href: "ads/" + ad_data.id } }, [_vm._v("Oglas")])
+            _c("a", { attrs: { href: "ads/" + ad_data.id } }, [
+              _vm._v(_vm._s(ad_data.title))
+            ])
           ]),
           _vm._v(" "),
           _c("div", { staticClass: "card-body" }, [
             _c("div", { staticClass: "row" }, [
               _c("div", { staticClass: "col-md-6" }, [
-                _c("p", { staticClass: "card-text" }, [
-                  _vm._v("Naslov: " + _vm._s(ad_data.title))
-                ]),
-                _vm._v(" "),
                 _c("img", {
                   staticStyle: { height: "100px" },
                   attrs: { src: ad_data.images[0].image_path, alt: "ad-image" }
@@ -51498,7 +51841,7 @@ var render = function() {
                 ]),
                 _vm._v(" "),
                 _c("p", { staticClass: "card-text" }, [
-                  _vm._v("Pol: " + _vm._s(ad_data.sex))
+                  _vm._v("Pol: " + _vm._s(ad_data.sex.name))
                 ]),
                 _vm._v(" "),
                 _c("p", { staticClass: "card-text" }, [
@@ -68512,6 +68855,10 @@ var token = document.head.querySelector('meta[name="csrf-token"]');
 
 if (token) {
   window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
+  window.laravelRequestHeaders = {
+    "content-type": "application/json",
+    "X-CSRF-TOKEN": token.content
+  };
 } else {
   console.error('CSRF token not found: https://laravel.com/docs/csrf#csrf-x-csrf-token');
 }

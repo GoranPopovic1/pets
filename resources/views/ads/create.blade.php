@@ -47,14 +47,9 @@
                                             class="form-control @error('category') is-invalid @enderror"
                                             name="category" required autocomplete="category" autofocus>
                                         <option value="">{{ __('Izaberi') }}</option>
-                                        <option value="psi">{{ __('Psi') }}</option>
-                                        <option value="mačke">{{ __('Mačke') }}</option>
-                                        <option value="ptice">{{ __('Ptice') }}</option>
-                                        <option value="konji">{{ __('Konji') }}</option>
-                                        <option value="ribice">{{ __('Ribice') }}</option>
-                                        <option value="glodari">{{ __('Glodari') }}</option>
-                                        <option value="reptili">{{ __('Reptili i amfibije') }}</option>
-                                        <option value="ostalo">{{ __('Ostalo') }}</option>
+                                        @foreach( $categories as $category )
+                                            <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                        @endforeach
                                     </select>
                                     @error('category')
                                     <span class="invalid-feedback" role="alert">
@@ -67,11 +62,11 @@
                             <div class="form-group row">
                                 <label for="sex" class="col-md-4 col-form-label text-md-right">{{ __('Pol') }}</label>
                                 <div class="col-md-6">
-                                    <select id="sex" class="form-control @error('sex') is-invalid @enderror" name="sex" required autocomplete="category" autofocus>
+                                    <select id="sex" class="form-control @error('sex') is-invalid @enderror" name="sex" required autocomplete="sex" autofocus>
                                         <option value="">{{ __('Izaberi') }}</option>
-                                        <option value="muški">{{ __('Muški') }}</option>
-                                        <option value="ženski">{{ __('Ženski') }}</option>
-                                        <option value="oba">{{ __('Oba Pola') }}</option>
+                                        @foreach( $sexes as $sex )
+                                            <option value="{{ $sex->id }}">{{ $sex->name }}</option>
+                                        @endforeach
                                     </select>
                                     @error('sex')
                                     <span class="invalid-feedback" role="alert">

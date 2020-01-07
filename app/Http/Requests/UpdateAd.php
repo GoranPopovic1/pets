@@ -24,10 +24,10 @@ class UpdateAd extends FormRequest
     public function rules()
     {
         return [
-            'title'       => ['required','string'],
-            'description' => ['required','string'],
-            'category'    => ['nullable','string'],
-            'sex'         => ['nullable','string'],
+            'title'       => ['required', 'string'],
+            'description' => ['required', 'string'],
+            'category'    => ['required', 'integer'],
+            'sex'         => ['required', 'integer'],
             'images'      => 'nullable',
             'images.*'    => 'mimes:jpeg,png,jpg|max:2048'
         ];
